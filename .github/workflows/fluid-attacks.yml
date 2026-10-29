@@ -1,0 +1,32 @@
+name: Fluid Attacks - Paso 2 (informativo)
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: fluidattacks/sast-action@1.3.0
+        with:
+          scan_config_path: .fluidattacks/sast.yaml
+          scanner_mode: full
+
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: fluidattacks/sca-action@main
+        with:
+          scan_config_path: .fluidattacks/sca.yaml
+          scanner_mode: full
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: fluidattacks/ss-action@main
+        with:
+          scan_config_path: .fluidattacks/ss.yaml
+          scanner_mode: full
