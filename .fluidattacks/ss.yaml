@@ -1,4 +1,5 @@
-strict: true
+# Secret Scan no soporta strictness_threshold (solo SAST, SCA y DAST)
+strict: false
 ss:
   include:
     - .

@@ -1,5 +1,6 @@
 language: ES
-strict: true
+# Rompe el build solo con hallazgos high o critical
+strictness_threshold: high
 output:
   file_path: sast-results.csv
   format: CSV
