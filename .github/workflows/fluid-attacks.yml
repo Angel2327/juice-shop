@@ -1,4 +1,4 @@
-name: Fluid Attacks - Paso 2 (informativo)
+name: Fluid Attacks - Paso 3 (estricto + CSV)
 on:
   push:
   workflow_dispatch:
@@ -9,24 +9,57 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: fluidattacks/sast-action@1.3.0
+        id: scan
         with:
           scan_config_path: .fluidattacks/sast.yaml
           scanner_mode: full
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sast-results
+          path: sast-results.csv
+      - name: Romper build si el escaner fallo la politica
+        if: steps.scan.outputs.vulnerabilities_found == 'true'
+        run: |
+          echo "::error::SAST encontro vulnerabilidades que rompen la politica"
+          exit 1
 
   sca:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: fluidattacks/sca-action@main
+        id: scan
         with:
           scan_config_path: .fluidattacks/sca.yaml
           scanner_mode: full
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sca-results
+          path: sca-results.csv
+      - name: Romper build si el escaner fallo la politica
+        if: steps.scan.outputs.vulnerabilities_found == 'true'
+        run: |
+          echo "::error::SCA encontro vulnerabilidades que rompen la politica"
+          exit 1
 
   secret-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: fluidattacks/ss-action@main
+        id: scan
         with:
           scan_config_path: .fluidattacks/ss.yaml
           scanner_mode: full
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ss-results
+          path: ss-results.csv
+      - name: Romper build si el escaner fallo la politica
+        if: steps.scan.outputs.vulnerabilities_found == 'true'
+        run: |
+          echo "::error::Secret Scan encontro secretos"
+          exit 1

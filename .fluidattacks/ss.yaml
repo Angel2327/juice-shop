@@ -1,7 +1,7 @@
-strict: false
+strict: true
 ss:
   include:
     - .
 output:
-  file_path: ss-results.sarif
-  format: SARIF
+  file_path: ss-results.csv
+  format: CSV
